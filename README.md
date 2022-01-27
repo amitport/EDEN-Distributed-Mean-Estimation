@@ -9,4 +9,4 @@ This repository is the official implementation of 'EDEN: Communication-Efficient
 
 ## Folder structure 
 
-The `torch` and `tf` folders contain EDEN's implementation in PyTorch and Tensorflow, respectively.  
+The `torch` and `tf` folders contain EDEN's implementation in PyTorch and TensorFlow, respectively.  
