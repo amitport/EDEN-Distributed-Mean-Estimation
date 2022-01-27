@@ -10,10 +10,6 @@ def gen_boundaries(centroids):
   return [(a + b) / 2 for a, b in zip(centroids[:-1], centroids[1:])]
 
 
-##############################################################################
-##############################################################################
-
-
 ### half-normal centroids
 opt_hn_centroids = {1: [0.7978845608028654],
                     2: [0.4527800398860679, 1.5104176087114887],
@@ -129,7 +125,7 @@ QUANTIZATION_CONSTANTS = {
 }
 
 
-@lru_cache(maxsize=None)  # TODO use functools.cache in python 3.9
+@lru_cache(maxsize=None)
 def get_all_quantization_constants_tensors(q_type, device, /):
   centroids, boundaries = QUANTIZATION_CONSTANTS[q_type]
 

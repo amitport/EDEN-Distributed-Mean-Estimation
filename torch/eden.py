@@ -1,11 +1,11 @@
 import math
 
 import torch
-from torch.nn import Flatten
 
-from base import Transform
+from base import Transform, CompressionPipeline, flatten
+from hadamard import RandomizedHadamard, padToPowerOf2
 from quantization_constants import QuantizationType, get_all_quantization_constants_tensors
-from hadamard import PadToPowerOf2, RandomizedHadamard
+from random_p import RandomP
 
 
 class EdenQuantization(Transform):
@@ -31,26 +31,26 @@ class EdenQuantization(Transform):
     d = x.numel()
     normalized_x = x * math.sqrt(d) / l2(x)
 
-    context = []
     if self.fractional_bits:
       seed = self.prng.seed()
-      mask = bernoulli_mask(x, self.bits_frac, self.prng)
+      mask = bernoulli_mask(x.shape, x.device, self.bits_frac, self.prng)
 
       x_low, x_high = mask_split(normalized_x, mask)
 
       assignments_low = torch.bucketize(x_low, self.boundaries[self.bits_low])
       assignments_high = torch.bucketize(x_high, self.boundaries[self.bits_high])
 
-      assignments = mask_combine(assignments_low, assignments_high, mask, x.shape)
+      assignments = (assignments_low, assignments_high)
 
       unscaled_centers_vec_low = torch.take(self.centroids[self.bits_low], assignments_low)
       unscaled_centers_vec_high = torch.take(self.centroids[self.bits_high], assignments_high)
 
-      unscaled_centers_vec = mask_combine(unscaled_centers_vec_low, unscaled_centers_vec_high, mask, x.shape)
-      context.append(seed)
+      unscaled_centers_vec = mask_combine(unscaled_centers_vec_low, unscaled_centers_vec_high, mask)
+      context = [seed, x.shape]
     else:
       assignments = torch.bucketize(normalized_x, self.boundaries)
       unscaled_centers_vec = torch.take(self.centroids[self.bits], assignments)
+      context = []
 
     scale = sum_squares(x) / (unscaled_centers_vec @ x)
 
@@ -59,25 +59,24 @@ class EdenQuantization(Transform):
 
   def backward(self, assignments, context):
     if self.fractional_bits:
-      seed, scale = context
-      mask = bernoulli_mask(assignments, self.bits_frac, self.prng.manual_seed(seed))
-
-      assignments_low, assignments_high = mask_split(assignments, mask)
+      seed, scale, original_shape = context
+      assignments_low, assignments_high = assignments
 
       unscaled_centers_vec_low = torch.take(self.centroids[self.bits_low], assignments_low)
       unscaled_centers_vec_high = torch.take(self.centroids[self.bits_high], assignments_high)
 
-      unscaled_centers_vec = mask_combine(unscaled_centers_vec_low, unscaled_centers_vec_high, mask, assignments.shape)
+      mask = bernoulli_mask(original_shape, assignments_low.device, self.bits_frac, self.prng.manual_seed(seed))
+      unscaled_centers_vec = mask_combine(unscaled_centers_vec_low, unscaled_centers_vec_high, mask)
     else:
-      scale = context
+      scale = context[0]
       unscaled_centers_vec = torch.take(self.centroids[self.bits], assignments)
 
     # restore scale
     return scale * unscaled_centers_vec, None
 
 
-def bernoulli_mask(x, p, prng):
-  return torch.empty(x.shape, dtype=torch.bool, device=x.device).bernoulli_(p=p, generator=prng)
+def bernoulli_mask(shape, device, p, prng):
+  return torch.empty(shape, dtype=torch.bool, device=device).bernoulli_(p=p, generator=prng)
 
 
 def mask_split(x, mask):
@@ -86,8 +85,8 @@ def mask_split(x, mask):
   return x0, x1
 
 
-def mask_combine(x0, x1, mask, shape):
-  x = torch.empty(shape, dtype=x0.dtype, device=x0.device)
+def mask_combine(x0, x1, mask):
+  x = torch.empty(mask.shape, dtype=x0.dtype, device=x0.device)
   x.masked_scatter_(torch.logical_not(mask), x0)
   x.masked_scatter_(mask, x1)
 
@@ -100,5 +99,24 @@ def sum_squares(x): return torch.sum(x ** 2)
 def l2(x): return torch.sqrt(sum_squares(x))
 
 
-def eden_compression_scheme(bits, q_type: QuantizationType = 'max_lloyd', device='cpu'):
-  return [Flatten(), PadToPowerOf2(), RandomizedHadamard(device), EdenQuantization(bits, q_type, device)]
+def eden_builder(bits, q_type: QuantizationType = 'max_lloyd', device='cpu'):
+  """
+
+  Args:
+    bits: A positive real bit rate
+    q_type: Either 'max_lloyd' (Section 3) or 'ee' (Section 4.3)
+    device: Torch device to use
+
+  Returns:
+    EDEN compression scheme instance
+  """
+  transforms = [flatten]
+  if bits < 1:
+    transforms += [RandomP(bits, device=device)]
+    bits = 1
+  transforms += [
+    padToPowerOf2,
+    RandomizedHadamard(device),
+    EdenQuantization(bits, q_type, device),
+  ]
+  return CompressionPipeline(transforms)

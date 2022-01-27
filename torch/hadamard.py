@@ -91,3 +91,6 @@ class PadToPowerOf2(Transform):
 
   def backward(self, tx, original_dim):
     return tx[:original_dim], None
+
+
+padToPowerOf2 = PadToPowerOf2()
