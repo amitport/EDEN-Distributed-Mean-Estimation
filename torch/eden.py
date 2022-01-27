@@ -48,7 +48,7 @@ class EdenQuantization(Transform):
       unscaled_centers_vec = mask_combine(unscaled_centers_vec_low, unscaled_centers_vec_high, mask)
       context = [seed, x.shape]
     else:
-      assignments = torch.bucketize(normalized_x, self.boundaries)
+      assignments = torch.bucketize(normalized_x, self.boundaries[self.bits])
       unscaled_centers_vec = torch.take(self.centroids[self.bits], assignments)
       context = []
 

@@ -11,9 +11,9 @@ from eden import eden_builder
 eden = eden_builder(bits=4)
 
 x = torch.randn([2 ** 10])
-encoded_x = eden.forward(x)
-reconstructed_x = eden.backward(encoded_x)
-
+encoded_x, context = eden.forward(x)
+reconstructed_x, metrics = eden.backward(encoded_x, context)
+print(reconstructed_x)
 # or just
-reconstructed_x = eden.roundtrip(x)
+reconstructed_x, metrics = eden.roundtrip(x)
 ```
