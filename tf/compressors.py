@@ -1,16 +1,14 @@
-from typing import Optional
+from functools import partial
 
 import tensorflow as tf
 import tensorflow_federated as tff
-from tensorflow.python.ops import math_ops
+from absl import logging
 
 from distributed_dp import compression_utils
-from functools import partial
-from absl import logging
-import tensorflow_federated as tff
-
-from tf.eden import eden_quantization, inverse_eden_quantization
-from tf.hadamard import _create_hadamard_fn
+from eden import eden_quantization, inverse_eden_quantization
+from hadamard import _create_hadamard_fn
+from kashin import _create_kashin_fn
+from sq import _create_sq_fn
 
 SUPPORTED_COMPRESSORS = ['noop', 'eden', 'hadamard', 'kashin', 'sq']
 

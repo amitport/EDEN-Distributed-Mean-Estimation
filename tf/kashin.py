@@ -1,9 +1,8 @@
-from tensorflow_model_optimization.python.core.internal import tensor_encoding as te
-from tensorflow_model_optimization.python.core.internal.tensor_encoding.encoders import as_simple_encoder
-from tensorflow_model_optimization.python.core.internal.tensor_encoding.stages import FlattenEncodingStage, \
-  BitpackingEncodingStage
-import tensorflow_federated as tff
 import tensorflow as tf
+import tensorflow_federated as tff
+from tensorflow_model_optimization.python.core.internal import tensor_encoding as te
+from tensorflow_model_optimization.python.core.internal.tensor_encoding.stages import FlattenEncodingStage
+
 from distributed_dp import compression_utils
 
 

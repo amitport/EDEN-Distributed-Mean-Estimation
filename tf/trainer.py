@@ -1,8 +1,8 @@
 import functools
 
+import tensorflow_federated as tff
 from absl import app
 from absl import flags
-import tensorflow_federated as tff
 
 import fed_avg_schedule
 from compressors import SUPPORTED_COMPRESSORS, get_compressor_factory
@@ -62,7 +62,7 @@ with utils_impl.record_hparam_flags() as compression_flags:
   flags.DEFINE_integer(name='num_bits', default=None,
                        help='the number of bits to use')
   flags.DEFINE_float(name='p', default=None,
-                       help='the sparsity constant')
+                     help='the sparsity constant')
 
 FLAGS = flags.FLAGS
 
