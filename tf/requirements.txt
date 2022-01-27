@@ -1,0 +1,7 @@
+tensorflow-federated-nightly==0.19.0.dev20211222
+tensorflow-model-optimization==0.7.0
+tensorflow-privacy==0.7.3
+tensorflow-probability==0.15.0
+tf-estimator-nightly==2.8.0.dev2021122109
+tf-nightly==2.8.0.dev20211222
+tfa-nightly==0.16.0.dev20211215063151

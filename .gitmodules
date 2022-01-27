@@ -1,0 +1,3 @@
+[submodule "tf/google_research_federated"]
+	path = tf/google_research_federated
+	url = https://github.com/google-research/federated.git
