@@ -1,0 +1,12 @@
+task=shakespeare_character
+shakespeare_character_sequence_length=80
+clients_per_round=10
+client_epochs_per_round=1
+client_datasets_random_seed=1
+total_rounds=1200
+client_batch_size=4
+client_optimizer=sgd
+client_learning_rate=1
+server_optimizer=adam
+server_learning_rate=0.01
+server_adam_epsilon=0.001

@@ -1,0 +1,12 @@
+task=emnist_character
+emnist_character_model_id=cnn
+clients_per_round=10
+client_epochs_per_round=1
+client_datasets_random_seed=1
+total_rounds=1500
+client_batch_size=20
+client_optimizer=sgd
+client_learning_rate=0.03162
+server_optimizer=adam
+server_adam_epsilon=0.0001
+server_learning_rate=0.003162
