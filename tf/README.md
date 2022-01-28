@@ -9,11 +9,14 @@ pip install -r requirements.txt
 
 ### Initialize git submodule
 
-Run the following to make sure that the remote Google's [federated research repo](https://github.com/google-research/federated) is cloned as a submodule:
+Run the following to make sure that the remote Google's [federated research repo](https://github.com/google-research/federated) (at git-hash `aaa24781d8927d26d8914cb802979067f416707d`)
+is cloned as a submodule:
 
 ```setup
 git submodule update --init --recursive
 ```
+
+
 
 ### Update PYTHONPATH
 
