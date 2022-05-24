@@ -1,6 +1,6 @@
 # EDEN: Communication-Efficient and Robust Distributed Mean Estimation for Federated Learning
 
-This repository is the official implementation of 'EDEN: Communication-Efficient and Robust Distributed Mean Estimation for Federated Learning'.
+This repository is the official implementation of 'EDEN: Communication-Efficient and Robust Distributed Mean Estimation for Federated Learning' published at ICML 2022 ([arXiv:2108.08842](https://arxiv.org/abs/2108.08842)).
 
 
 ## Context
@@ -10,3 +10,16 @@ This repository is the official implementation of 'EDEN: Communication-Efficient
 ## Folder structure 
 
 The `torch` and `tf` folders contain EDEN's implementation in PyTorch and TensorFlow, respectively.  
+
+## Citation
+
+If you find this useful, please cite us:
+
+```bibtex
+@inproceedings{EDEN2022,
+  title={{EDEN: Communication-Efficient Federated Learning via Robust Distributed Mean Estimation}},
+  author={Vargaftik, Shay and Basat, Ran Ben and Portnoy, Amit and Mendelson, Gal and Ben-Itzhak, Yaniv and Mitzenmacher, Michael},
+  booktitle={International Conference on Machine Learning},
+  year={2022}
+}
+```
