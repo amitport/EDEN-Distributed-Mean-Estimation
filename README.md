@@ -17,7 +17,7 @@ If you find this useful, please cite us:
 
 ```bibtex
 @inproceedings{EDEN2022,
-  title={{EDEN: Communication-Efficient Federated Learning via Robust Distributed Mean Estimation}},
+  title={{EDEN: Communication-Efficient and Robust Distributed Mean Estimation for Federated Learning}},
   author={Vargaftik, Shay and Basat, Ran Ben and Portnoy, Amit and Mendelson, Gal and Ben-Itzhak, Yaniv and Mitzenmacher, Michael},
   booktitle={International Conference on Machine Learning},
   year={2022}
